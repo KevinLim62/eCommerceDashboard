@@ -27,6 +27,8 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.3.3",
     "@nestjs/typeorm": "^10.0.2",
+    "cloudinary": "^2.0.2",
+    "dotenv": "^16.4.5",
     "mysql2": "^3.9.1",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.0",

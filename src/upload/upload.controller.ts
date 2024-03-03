@@ -17,13 +17,10 @@ export class UploadController {
   @Public()
   @UseInterceptors(FileInterceptor('file'))
   @Post('file')
-  uploadFile(
+  async uploadFile(
     @Body() body: CreateUploadDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return {
-      body,
-      file: file.buffer.toString(),
-    };
+    return this.uploadService.uploadFile(file, body);
   }
 }
