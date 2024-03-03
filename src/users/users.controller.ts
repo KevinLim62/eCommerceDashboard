@@ -17,21 +17,21 @@ import {
   updateUserSchema,
 } from './dto/user.schema';
 import { ZodValidationPipe } from 'src/utils/validationPipe';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { DeleteResult } from 'typeorm';
-import { Public } from 'src/utils/middlewares';
+import { Public, Roles } from 'src/utils/middlewares';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
+  @Roles(UserRole.ADMIN)
   @Post()
   @UsePipes(new ZodValidationPipe(createUserSchema))
   async createUser(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);
   }
 
-  @Public()
   @Get()
   async retrieveAllUsers(): Promise<User[]> {
     return this.userService.retrieveAllUsers();

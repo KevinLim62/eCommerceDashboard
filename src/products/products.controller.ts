@@ -17,19 +17,20 @@ import {
   createProductSchema,
   updateProductSchema,
 } from './dto/product.schema';
-import { Public } from 'src/utils/middlewares';
+import { Public, Roles } from 'src/utils/middlewares';
+import { UserRole } from 'src/users/entities/user.entity';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @Roles(UserRole.ADMIN)
   @Post()
   @UsePipes(new ZodValidationPipe(createProductSchema))
   async createProduct(@Body() product: CreateProductDto) {
     return this.productsService.createProduct(product);
   }
 
-  @Public()
   @Get()
   async retrieveAllProducts() {
     return this.productsService.retrieveAllProducts();

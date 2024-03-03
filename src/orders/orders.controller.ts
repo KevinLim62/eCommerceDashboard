@@ -15,19 +15,20 @@ import {
   UpdateOrderDto,
   createOrderSchema,
 } from './dto/order.schema';
-import { Public } from 'src/utils/middlewares';
+import { Public, Roles } from 'src/utils/middlewares';
+import { UserRole } from 'src/users/entities/user.entity';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  @Roles(UserRole.ADMIN)
   @Post()
   @UsePipes(new ZodValidationPipe(createOrderSchema))
   async create(@Body() order: CreateOrderDto) {
     return this.ordersService.createOrder(order);
   }
 
-  @Public()
   @Get()
   async retrieveAllOrders() {
     return this.ordersService.retrieveAllOrders();
