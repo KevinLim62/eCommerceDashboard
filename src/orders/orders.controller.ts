@@ -22,7 +22,7 @@ import { UserRole } from 'src/users/entities/user.entity';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Roles(UserRole.ADMIN)
+  @Public()
   @Post()
   @UsePipes(new ZodValidationPipe(createOrderSchema))
   async create(@Body() order: CreateOrderDto) {
@@ -34,6 +34,7 @@ export class OrdersController {
     return this.ordersService.retrieveAllOrders();
   }
 
+  @Public()
   @Get(':id')
   async retriveOrderById(@Param('id') id: string) {
     return this.ordersService.retriveOrderById(+id);

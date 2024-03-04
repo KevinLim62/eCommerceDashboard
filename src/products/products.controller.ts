@@ -31,11 +31,13 @@ export class ProductsController {
     return this.productsService.createProduct(product);
   }
 
+  @Public()
   @Get()
   async retrieveAllProducts() {
     return this.productsService.retrieveAllProducts();
   }
 
+  @Public()
   @Get(':id')
   async retrieveProductById(@Param('id') id: string) {
     return this.productsService.retrieveProductById(+id);
