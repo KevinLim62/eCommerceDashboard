@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserEntity } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/user.schema';
+import { sendEmail } from 'src/utils/resend';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +20,13 @@ export class UsersService {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
 
-    return this.usersRepository.save(user);
+    const User = await this.usersRepository.save(user);
+    await sendEmail({
+      receiverEmail: User.email,
+      subject: 'Email Verification',
+      userId: User.id.toString(),
+    });
+    return User;
   }
 
   async retrieveAllUsers(): Promise<User[]> {
@@ -27,11 +34,26 @@ export class UsersService {
   }
 
   async retrieveUserById(id: number): Promise<User> {
-    return this.usersRepository.findOneBy({ id: id });
+    return this.usersRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
   }
 
   async retrieveUserByEmail(email: string): Promise<User> {
-    return this.usersRepository.findOneBy({ email: email });
+    return this.usersRepository.findOne({
+      where: {
+        email: email,
+      },
+    });
+  }
+
+  async updateUserStatusById(id: number): Promise<User> {
+    await this.usersRepository.update(id, {
+      isActive: true,
+    });
+    return this.retrieveUserById(id);
   }
 
   async updateUserById(id: number, user: UpdateUserDto): Promise<User> {

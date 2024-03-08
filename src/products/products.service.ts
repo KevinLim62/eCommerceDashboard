@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Product, ProductEntity } from './entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './dto/product.schema';
+import { createStripeProduct } from 'src/utils/stripe';
 
 @Injectable()
 export class ProductsService {
@@ -20,19 +21,41 @@ export class ProductsService {
       throw new HttpException('Product already exists', HttpStatus.BAD_REQUEST);
     }
 
-    return this.productsRepository.save(product);
+    const Product = await this.productsRepository.save(product);
+    await createStripeProduct(product, Product.id.toString());
+    return Product;
   }
 
   async retrieveAllProducts(): Promise<Product[]> {
+    // Create Stripe Product Script
+    // const allProducts = await this.productsRepository.find();
+    // allProducts.forEach(async (product) => {
+    //   const payload: CreateProductDto = {
+    //     name: product.name,
+    //     price: product.price,
+    //     imageSrc: product.imageSrc,
+    //     description: product.description,
+    //   };
+    //   await createStripeProduct(payload, product.id.toString());
+    // });
+
     return this.productsRepository.find();
   }
 
   async retrieveProductById(id: number): Promise<Product> {
-    return this.productsRepository.findOneBy({ id: id });
+    return this.productsRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
   }
 
   async retrieveProductByName(name: string): Promise<Product> {
-    return this.productsRepository.findOneBy({ name: name });
+    return this.productsRepository.findOne({
+      where: {
+        name: name,
+      },
+    });
   }
 
   async updateProductById(

@@ -25,7 +25,7 @@ import { Public, Roles } from 'src/utils/middlewares';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Roles(UserRole.ADMIN)
+  @Public()
   @Post()
   @UsePipes(new ZodValidationPipe(createUserSchema))
   async createUser(@Body() user: CreateUserDto) {
@@ -40,6 +40,12 @@ export class UsersController {
   @Get(':id')
   async retrieveUserById(@Param('id') id: string): Promise<User> {
     return this.userService.retrieveUserById(+id);
+  }
+
+  @Public()
+  @Get('/activation/:id')
+  async updateUserStatusById(@Param('id') id: string): Promise<User> {
+    return this.userService.updateUserStatusById(+id);
   }
 
   @Put(':id')

@@ -39,5 +39,5 @@ export type User = {
   email: string;
   password: string;
   role: UserRole;
-  isActive?: boolean;
+  isActive: boolean;
 };

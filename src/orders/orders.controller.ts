@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UsePipes,
+  Put,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { ZodValidationPipe } from 'src/utils/validationPipe';
@@ -29,18 +30,25 @@ export class OrdersController {
     return this.ordersService.createOrder(order);
   }
 
+  @Public()
   @Get()
   async retrieveAllOrders() {
     return this.ordersService.retrieveAllOrders();
   }
 
   @Public()
+  @Get('/userId/:id')
+  async retriveOrderByUserId(@Param('id') id: string) {
+    return this.ordersService.retriveOrderByUserId(+id);
+  }
+
   @Get(':id')
   async retriveOrderById(@Param('id') id: string) {
     return this.ordersService.retriveOrderById(+id);
   }
 
-  @Patch(':id')
+  @Public()
+  @Put(':id')
   async updateOrderById(
     @Param('id') id: string,
     @Body() order: UpdateOrderDto,

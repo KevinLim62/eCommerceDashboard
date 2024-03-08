@@ -1,5 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { OrderItem, OrderItemEntity } from './orderItem.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -23,6 +32,10 @@ export class OrderEntity {
     cascade: true,
   })
   orderItem: OrderItemEntity[];
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn()
+  user: UserEntity;
 
   //Expire time in seconds
   @Column({ default: '300' })
