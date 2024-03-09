@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { User, UserEntity } from './entities/user.entity';
+import { User, UserEntity, UserRole } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/user.schema';
 import { sendEmail } from 'src/utils/resend';
@@ -21,11 +21,13 @@ export class UsersService {
     }
 
     const User = await this.usersRepository.save(user);
-    await sendEmail({
-      receiverEmail: User.email,
-      subject: 'Email Verification',
-      userId: User.id.toString(),
-    });
+    if (user.role !== UserRole.ADMIN) {
+      await sendEmail({
+        receiverEmail: User.email,
+        subject: 'Email Verification',
+        userId: User.id.toString(),
+      });
+    }
     return User;
   }
 

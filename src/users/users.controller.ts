@@ -8,6 +8,7 @@ import {
   UsePipes,
   Put,
   UseGuards,
+  Redirect,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
@@ -44,8 +45,11 @@ export class UsersController {
 
   @Public()
   @Get('/activation/:id')
-  async updateUserStatusById(@Param('id') id: string): Promise<User> {
-    return this.userService.updateUserStatusById(+id);
+  async updateUserStatusById(@Param('id') id: string) {
+    const user = await this.userService.updateUserStatusById(+id);
+    Redirect(
+      `${process.env.NEXT_UI_URL}/profile?activation=true&email=${user.email}&password=${user.password}`,
+    );
   }
 
   @Put(':id')
