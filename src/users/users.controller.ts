@@ -45,11 +45,14 @@ export class UsersController {
 
   @Public()
   @Get('/activation/:id')
+  @Redirect(process.env.NEXT_UI_URL, 301)
   async updateUserStatusById(@Param('id') id: string) {
     const user = await this.userService.updateUserStatusById(+id);
-    Redirect(
-      `${process.env.NEXT_UI_URL}/profile?activation=true&email=${user.email}&password=${user.password}`,
-    );
+    if (user) {
+      return {
+        url: `${process.env.NEXT_UI_URL}/profile?activation=true&email=${user.email}&password=${user.password}`,
+      };
+    }
   }
 
   @Put(':id')
