@@ -28,9 +28,7 @@ export class OrderEntity {
   })
   orderStatus: OrderStatus;
 
-  @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order, {
-    cascade: true,
-  })
+  @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order)
   orderItem: OrderItemEntity[];
 
   @ManyToOne(() => UserEntity)
