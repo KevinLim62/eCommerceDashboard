@@ -14,7 +14,7 @@ export class OrderItemEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => ProductEntity)
+  @ManyToOne(() => ProductEntity)
   @JoinColumn()
   product: ProductEntity;
 
