@@ -4,8 +4,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { DeleteResult, Repository } from 'typeorm';
 import { Product, ProductEntity } from './entities/product.entity';
-import { CreateProductDto, UpdateProductDto } from './dto/product.schema';
+import {
+  CreateProductDto,
+  RetrieveProductDto,
+  UpdateProductDto,
+} from './dto/product.schema';
 import { createStripeProduct } from 'src/utils/stripe';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductsService {
@@ -26,20 +35,46 @@ export class ProductsService {
     return Product;
   }
 
-  async retrieveAllProducts(): Promise<Product[]> {
-    // Create Stripe Product Script
-    // const allProducts = await this.productsRepository.find();
-    // allProducts.forEach(async (product) => {
-    //   const payload: CreateProductDto = {
-    //     name: product.name,
-    //     price: product.price,
-    //     imageSrc: product.imageSrc,
-    //     description: product.description,
-    //   };
-    //   await createStripeProduct(payload, product.id.toString());
-    // });
+  async retrieveAllProducts(
+    query: RetrieveProductDto,
+  ): Promise<Pagination<ProductEntity>> {
+    let {
+      page = '1',
+      limit = '8',
+      search = '',
+      sort = 'name',
+      order = '1',
+      minPrice = '',
+      maxPrice = '',
+    } = query;
 
-    return this.productsRepository.find();
+    const routeUrl = `${process.env.NEXT_UI_URL}/browse`;
+    const queryBuilder = this.productsRepository.createQueryBuilder('p');
+
+    // Search query
+    if (search) {
+      queryBuilder.where('p.name like :search', { search: `%${search}%` });
+    }
+
+    // Price range query
+    if (minPrice && maxPrice) {
+      queryBuilder.andWhere('p.price BETWEEN :minPrice AND :maxPrice', {
+        minPrice,
+        maxPrice,
+      });
+    } else if (minPrice) {
+      queryBuilder.andWhere('p.price >= :minPrice', { minPrice });
+    } else if (maxPrice) {
+      queryBuilder.andWhere('p.price <= :maxPrice', { maxPrice });
+    }
+
+    queryBuilder.orderBy(`p.${sort}`, query.order === '1' ? 'ASC' : 'DESC');
+
+    return paginate<ProductEntity>(queryBuilder, {
+      limit: parseInt(limit),
+      page: parseInt(page),
+      route: routeUrl,
+    });
   }
 
   async retrieveProductById(id: number): Promise<Product> {

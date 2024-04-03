@@ -8,13 +8,16 @@ import {
   Delete,
   UsePipes,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ZodValidationPipe } from 'src/utils/validationPipe';
 import {
   CreateProductDto,
+  RetrieveProductDto,
   UpdateProductDto,
   createProductSchema,
+  retrieveProductSchema,
   updateProductSchema,
 } from './dto/product.schema';
 import { Public, Roles } from 'src/utils/middlewares';
@@ -33,8 +36,9 @@ export class ProductsController {
 
   @Public()
   @Get()
-  async retrieveAllProducts() {
-    return this.productsService.retrieveAllProducts();
+  @UsePipes(new ZodValidationPipe(retrieveProductSchema))
+  async retrieveAllProducts(@Query() query: RetrieveProductDto) {
+    return this.productsService.retrieveAllProducts(query);
   }
 
   @Public()

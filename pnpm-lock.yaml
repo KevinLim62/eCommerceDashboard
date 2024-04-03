@@ -35,6 +35,9 @@ dependencies:
   mysql2:
     specifier: ^3.9.1
     version: 3.9.1
+  nestjs-typeorm-paginate:
+    specifier: ^4.0.4
+    version: 4.0.4(@nestjs/common@10.3.3)(typeorm@0.3.20)
   pg:
     specifier: ^8.11.3
     version: 8.11.3
@@ -4346,6 +4349,16 @@ packages:
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
+
+  /nestjs-typeorm-paginate@4.0.4(@nestjs/common@10.3.3)(typeorm@0.3.20):
+    resolution: {integrity: sha512-arinWDc78wPV/EYWMmLYyeMSE5Lae1FHWD/2QpOdTmHaOVqK4PYf19EqZBqT9gbbPugkNW9JAMz3G2WmvSgR/A==}
+    peerDependencies:
+      '@nestjs/common': ^6.1.1 || ^5.6.2 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+      typeorm: ^0.3.0
+    dependencies:
+      '@nestjs/common': 10.3.3(reflect-metadata@0.2.1)(rxjs@7.8.1)
+      typeorm: 0.3.20(mysql2@3.9.1)(pg@8.11.3)(ts-node@10.9.2)
+    dev: false
 
   /node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
