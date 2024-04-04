@@ -27,7 +27,7 @@ import { UserRole } from 'src/users/entities/user.entity';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.CLIENT, UserRole.ADMIN)
   @Post()
   @UsePipes(new ZodValidationPipe(createProductSchema))
   async createProduct(@Body() product: CreateProductDto) {
@@ -47,6 +47,7 @@ export class ProductsController {
     return this.productsService.retrieveProductById(+id);
   }
 
+  @Roles(UserRole.CLIENT, UserRole.ADMIN)
   @Put(':id')
   @UsePipes(new ZodValidationPipe(updateProductSchema))
   async updateProductById(
@@ -56,6 +57,7 @@ export class ProductsController {
     return this.productsService.updateProductById(+id, product);
   }
 
+  @Roles(UserRole.CLIENT, UserRole.ADMIN)
   @Delete(':id')
   async deleteProductById(@Param('id') id: string) {
     return this.productsService.deleteProductById(+id);

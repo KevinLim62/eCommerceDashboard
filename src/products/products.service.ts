@@ -40,9 +40,9 @@ export class ProductsService {
   ): Promise<Pagination<ProductEntity>> {
     let {
       page = '1',
-      limit = '8',
+      limit = '4',
       search = '',
-      sort = 'name',
+      sort = 'id',
       order = '1',
       minPrice = '',
       maxPrice = '',
@@ -68,7 +68,7 @@ export class ProductsService {
       queryBuilder.andWhere('p.price <= :maxPrice', { maxPrice });
     }
 
-    queryBuilder.orderBy(`p.${sort}`, query.order === '1' ? 'ASC' : 'DESC');
+    queryBuilder.orderBy(`p.${sort}`, order === '1' ? 'ASC' : 'DESC');
 
     return paginate<ProductEntity>(queryBuilder, {
       limit: parseInt(limit),
